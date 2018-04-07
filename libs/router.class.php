@@ -58,10 +58,18 @@ class Router extends BaseKernel {
                     BaseKernel::showRegisterUI();
                     break;
                 case 'logout':
-                    BaseKernel::showLogoutUI();
+                    if (BaseKernel::doLogout()) {
+                        BaseKernel::showLogoutUI();
+                    }
+                    else {
+                        BaseKernel::showErrorUI();
+                    }
                     break;
                 case 'ucenter':
                     BaseKernel::showUCenterUI();
+                    break;
+                case 'api':
+                    BaseKernel::loadApi();
                     break;
                 default:
                     BaseKernel::showErrorUI();

@@ -5,9 +5,10 @@ PHPSSOFramework - 一款基于PHP 开发的SSO服务端框架
 
 ## 支持功能
 
-* [ ] 用户本域登录/注册
+* [x] 用户本域登录
+* [ ] 用户本域注册
 * [ ] 多用户管理/异步登录注册（AJAX）
-* [ ] 同父域Cookie共享
+* [x] 同父域Cookie共享
 * [ ] 跨父域Cookie共享
 * [ ] Session安全支持
 * [ ] Token访问令牌鉴权

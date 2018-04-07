@@ -38,7 +38,7 @@
 								<input type="password" name="password" id="password" placeholder="用户密码" />
 							</div>
 							<ul class="actions">
-								<li><a href="#" class="button">登录</a></li>
+								<li><a id="loginbutton" href="javascript:doLoginRequest()" class="button">登录</a></li>
 								<li><a href="./index.php?action=register" class="button">注册</a></li>
 							</ul>
 						</form>
@@ -60,6 +60,17 @@
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-loading\b/, ''); });
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
 				}
+			</script>
+			<script type="text/javascript" src="assets/js/common.js"></script>
+			<script type="text/javascript" src="assets/js/login.js"></script>
+			<!-- Onekey Login Support -->
+			<script type="text/javascript" language="javascript" charset="UTF-8">
+				document.onkeydown = function(event) {
+					var listener = event || window.event || arguments.callee.caller.arguments[0];
+					if(listener && listener.keyCode==13) {
+						document.getElementById("loginbutton").click();
+					}
+				};
 			</script>
 
 	</body>
