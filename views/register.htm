@@ -41,7 +41,8 @@
 								<input type="password" name="password2" id="password2" placeholder="再次输入" />
                             </div>
                             <div class="field">
-								<input type="text" name="verifycode" id="verifycode" placeholder="人机验证" disabled="disabled" />
+								<input type="text" name="verifycode" id="verifycode" placeholder="人机验证" />
+								验证码：<img id="vcodeimg" src="index.php?action=api&mod=getVerifyCode" alt="图形验证码" style="vertical-align: middle" onclick="refreshCode()" />
 							</div>
 							<ul class="actions">
 								<li><a href="#" class="button">注册</a></li>
@@ -65,6 +66,10 @@
 				if ('addEventListener' in window) {
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-loading\b/, ''); });
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+				}
+
+				function refreshCode() {
+					document.getElementById("vcodeimg").src='./index.php?action=api&mod=getVerifyCode&random_count=' + Math.random();
 				}
 			</script>
 

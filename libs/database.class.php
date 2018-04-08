@@ -24,7 +24,6 @@ class DB {
      * 构造函数
      */
     private function __construct() {
-        require(APP_PATH.'config.inc.php');
         $this->sqlsrv = constant('dbhost');
         $this->sqlusr = constant('dbuser');
         $this->sqlpwd = constant('dbpswd');

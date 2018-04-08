@@ -7,14 +7,43 @@
  * @copyright 2012-2018 DingStudio All Rights Reserved
  */
 
-class BaseKernel extends DB {
+class BaseKernel {
+
+    static private $_instance = null;
+    private $_timezone = null;
 
     /**
      * Construct Function
+     * @param string $timezone
      * @return null
      */
-    public function __construct() {
-        require(APP_PATH.'config.inc.php');
+    private function __construct($timezone = 'Asia/Shanghai') {
+        $this->_timezone = $timezone;
+        require_once(APP_PATH.'config.inc.php');
+        require_once(APP_PATH.'libs/database.class.php');
+        require_once(APP_PATH.'libs/imgverify.class.php');
+        require_once(APP_PATH.'libs/router.class.php');
+        require_once(APP_PATH.'libs/api.class.php');
+    }
+
+    /**
+     * Single Instance Receiver
+     * @param string $timezone
+     * @return mixed
+     */
+    public static function getInstance($timezone = 'Asia/Shanghai') {
+        if (!(self::$_instance instanceof self)) {
+            self::$_instance = new self($timezone);
+        }
+        return self::$_instance;
+    }
+
+    /**
+     * Load Router
+     */
+    public function loadRouter() {
+        $router = Router::getInstance($this->_timezone);
+        $router->load();
     }
 
     /**
@@ -26,7 +55,7 @@ class BaseKernel extends DB {
     public function doLogin($user, $pswd) {
         $mydb = DB::getInstance();
         $data = $mydb->QueryData('select * from users where username="'.$user.'" and password="'.$pswd.'"');
-        if ($data[0]['username'] = $user && $data[0]['password'] == $pswd) {
+        if ($data[0]['username'] == $user && $data[0]['password'] == $pswd) {
             $token = uniqid('sso_');
             $mydb->QueryResult('update users set usertoken="'.$token.'" where username="'.$user.'"');
             setcookie('mysso_user', $user, time() + 3600, '/', constant('domain'));
@@ -35,6 +64,18 @@ class BaseKernel extends DB {
         }
         else {
             return false;
+        }
+    }
+
+    public function doRegister($user, $pswd) {
+        $mydb = DB::getInstance();
+        $data = $mydb->QueryData('select * from users where username="'.$user.'"');
+        if ($data[0]['username'] == $user) {
+            return false;
+        }
+        $result = $mydb->QueryResult('insert into users (username, password) values ("'.$user.'", "'.$pswd.'")');
+        if ($result == 1) {
+            return true;
         }
     }
 
@@ -67,50 +108,11 @@ class BaseKernel extends DB {
         }
     }
 
+    /**
+     * API Router Load
+     */
     public function loadApi() {
-        header('Content-Type: application/json; charset=UTF-8');
-        if (!isset($_REQUEST['mod'])) {
-            self::outjson(404, 'Module name not found.', null); //未指定模块的错误回显
-        }
-        switch ($_REQUEST['mod']) {
-            case 'login':
-                if (!isset($_REQUEST['username']) || !isset($_REQUEST['password'])) {
-                    self::outjson(401, 'The username and password are necessary.', null); //登录时未传入完整用户凭据的错误回显
-                }
-                $username = $_REQUEST['username'];
-                $password = $_REQUEST['password'];
-                if (self::doLogin($username, $password)) {
-                    self::outjson(200, 'Login successfully.', null);
-                }
-                else {
-                    self::outjson(403, 'The user name or password you entered is incorrect, or you do not have authorization to perform this operation.', null);
-                }
-                break;
-            case 'register':
-                //TODO
-                break;
-            case 'logout':
-                if (self::doLogout()) {
-                    self::outjson(200, 'Logout successfully.', null);
-                }
-                else {
-                    self::outjson(500, 'Logout failed.', null);
-                }
-                break;
-            default:
-                self::outjson(404, 'Module not found.', null); //模块不存在的错误回显
-                break;
-        }
-    }
-
-    private function outjson($code = -1, $message = '', $subdata = null) {
-        $data = array(
-            'code'  =>  $code,
-            'message'   =>  $message,
-            'data'  =>  $subdata,
-            'timestamp' =>  date('YmdHis', time())
-        );
-        exit(json_encode($data));
+        API::getInstance($this->_timezone)->load();
     }
 
     /**

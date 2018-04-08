@@ -26,7 +26,6 @@ class Router extends BaseKernel {
         if (!session_id()) {
             session_start();
         }
-        require_once(APP_PATH.'libs/database.class.php');
     }
 
     /**
@@ -36,7 +35,7 @@ class Router extends BaseKernel {
      */
     public static function getInstance($timezone = 'Asia/Shanghai') {
         if (!(self::$_instance instanceof self)) {
-            self::$_instance = new self();
+            self::$_instance = new self($timezone);
         }
         return self::$_instance;
     }
