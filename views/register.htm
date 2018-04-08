@@ -27,7 +27,7 @@
 							<h1>用户注册</h1>
 							<p>一个账号，全站互通</p>
 						</header>
-						
+
 						<hr />
 						<!--<h2>Extra Stuff!</h2>-->
 						<form method="post" action="#">
@@ -45,7 +45,7 @@
 								验证码：<img id="vcodeimg" src="index.php?action=api&mod=getVerifyCode" alt="图形验证码" style="vertical-align: middle" onclick="refreshCode()" />
 							</div>
 							<ul class="actions">
-								<li><a href="#" class="button">注册</a></li>
+								<li><a id="regbutton" href="javascript:doRegisterRequest()" class="button">注册</a></li>
 								<li><a href="javascript:history.go(-1)" class="button">返回</a></li>
 							</ul>
 						</form>
@@ -67,10 +67,20 @@
 					window.addEventListener('load', function() { document.body.className = document.body.className.replace(/\bis-loading\b/, ''); });
 					document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
 				}
-
 				function refreshCode() {
 					document.getElementById("vcodeimg").src='./index.php?action=api&mod=getVerifyCode&random_count=' + Math.random();
 				}
+			</script>
+			<script type="text/javascript" src="assets/js/common.js"></script>
+			<script type="text/javascript" src="assets/js/register.js"></script>
+			<!-- Onekey Register Support -->
+			<script type="text/javascript" language="javascript" charset="UTF-8">
+				document.onkeydown = function(event) {
+					var listener = event || window.event || arguments.callee.caller.arguments[0];
+					if(listener && listener.keyCode==13) {
+						document.getElementById("regbutton").click();
+					}
+				};
 			</script>
 
 	</body>

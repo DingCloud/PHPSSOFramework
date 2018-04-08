@@ -1,6 +1,6 @@
 // SSO JavaScript Logic
 
-var LoginServlet = 'http://sso.local.dingstudio.cn/index.php?action=api&mod=login';
+var LoginServlet = '/index.php?action=api&mod=login';
 
 function doLoginRequest() {
     if (document.getElementById('username').value == '' || document.getElementById('password').value == '') {
@@ -19,9 +19,11 @@ function doLoginRequest() {
         dataType: 'json',
         async: true,
         success: function (res) {
+            refreshForm();
             if (res.code == 200) {
                 if (getUrlParam('callbackUrl') == null) {
-                    alert('登录成功！但由于您的本次认证为纯认证模式，系统将不作跳转。');
+                    alert('登录成功！');
+                    location.reload();
                 }
                 else {
                     location.href = getUrlParam('callbackUrl');
@@ -35,4 +37,8 @@ function doLoginRequest() {
             }
         }
     });
+}
+
+function refreshForm() {
+    document.getElementById('password').value = '';
 }

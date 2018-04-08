@@ -51,13 +51,19 @@ class Router extends BaseKernel {
         else {
             switch ($_REQUEST['action']) {
                 case 'login':
+                    if (BaseKernel::isLogin()) {
+                        self::redirect('./index.php?action=ucenter');
+                    }
                     BaseKernel::showLoginUI();
                     break;
                 case 'register':
                     BaseKernel::showRegisterUI();
                     break;
                 case 'logout':
-                    if (BaseKernel::doLogout()) {
+                    if (!BaseKernel::isLogin()) {
+                        self::redirect('./index.php?action=login');
+                    }
+                    else if (BaseKernel::doLogout()) {
                         BaseKernel::showLogoutUI();
                     }
                     else {
@@ -65,7 +71,12 @@ class Router extends BaseKernel {
                     }
                     break;
                 case 'ucenter':
-                    BaseKernel::showUCenterUI();
+                    if (!BaseKernel::isLogin()) {
+                        self::redirect('./index.php?action=login');
+                    }
+                    else {
+                        BaseKernel::showUCenterUI();
+                    }
                     break;
                 case 'api':
                     BaseKernel::loadApi();

@@ -51,6 +51,9 @@ class DB {
             self::$_sqlcon = self::connect();
         }
         $result = self::$_sqlcon->query($sqlcode);
+        if (!$result) {
+            return null;
+        }
         $data = $result->fetch_all(MYSQLI_ASSOC);
         if ($data == null || $data == '') {
             return null;
